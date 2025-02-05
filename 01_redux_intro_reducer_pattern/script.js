@@ -1,26 +1,44 @@
-let reduxState = {
+import { createStore } from "redux";
+
+let initialState = {
   post: 0,
   name: "Nagender kumar",
-  age: 26,
+  age: 21,
 };
 
-function reducer(state, action) {
-  if (action.type === "post/increment") {
-    return { ...state, post: state.post + 1 };
-  } else if (action.type === "post/decrement") {
-    return { ...state, post: state.post - 1 };
+const INCREMENT = "post/increment";
+const DECREMENT = "post/decrement";
+const INCREASE_BY = "post/increaseBy";
+const DECREASE_BY = "post/decreaseBY";
+
+function reducer(state = initialState, action) {
+  switch (action.type) {
+    case INCREMENT:
+      return { ...state, post: state.post + 1 };
+
+    case DECREMENT:
+      return { ...state, post: state.post - 1 };
+
+    case INCREASE_BY:
+      return { ...state, post: state.post + action.payload };
+
+    case DECREASE_BY:
+      return { ...state, post: state.post - action.payload };
+    default:
+      return state;
   }
-  return state;
 }
 
-// What Redux will Do
+const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__?.())
 
-console.log(reduxState);
-reduxState = reducer(reduxState, { type: "post/increment" });
-console.log(reduxState);
-reduxState = reducer(reduxState, { type: "post/increment" });
-console.log(reduxState);
-reduxState = reducer(reduxState, { type: "post/decrement" });
-console.log(reduxState);
-reduxState = reducer(reduxState, { type: "post/increment" });
-console.log(reduxState);
+console.log(store);
+
+store.subscribe(() => {
+  console.log(store.getState())
+}) 
+
+store.dispatch({ type: INCREMENT})
+store.dispatch({ type: DECREMENT})
+store.dispatch({ type: INCREASE_BY, payload: 15})
+store.dispatch({ type: DECREASE_BY, payload: 5})
+
